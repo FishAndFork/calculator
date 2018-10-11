@@ -9,30 +9,33 @@
     vertical-align: middle;
     display: table;
     color: coral;
-    font-size: 30px;
-    font-weight: 600;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 36px;
+    font-weight: 300;
+    font-family: Impact, Charcoal, sans-serif;
 }
 
 .display {
     margin: 30px auto;
-    width: 610px;
+    width: 600px;
     height: 60px;
-    box-shadow: 0px 0px 34px 2px rgba(0,0,0,0.75);
-    /*font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;*/
+    box-shadow: 0px 0px 34px 2px rgba(0,0,0,0.60);
     font-family: "Lucida Console", Monaco, monospace;
     font-size: 71px;
     font-weight: 1000;
     text-align: right;
     color: rgb(55, 55, 55);
+    border-radius: 6px;
+    border: 3px solid rgb(52, 83, 107);
 }
 
 .container {
     margin: 0 auto;
-    width: 600px;
+    width: 560px;
     height: 400px;
-    box-shadow: 0px 0px 34px 2px rgba(0,0,0,0.75);
-    padding: 5px;
+    box-shadow: 0px 0px 34px 2px rgba(0,0,0,0.60);
+    padding: 20px;
+    border-radius: 6px;
+    border: 3px solid rgb(52, 83, 107);
 }
 
 .calcButton {
@@ -41,34 +44,31 @@
     text-align: center;
     vertical-align: middle;
     display: table;
-    background-color: rgb(58, 75, 88);
+    background-color: rgb(52, 83, 107);
     color: white;
-    margin: 5px;
-    font-size: 36px;
+    margin: 5px 10px;
+    font-size: 41px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-weight: 700;
-    height: 48px;
+    height: 53px;
     /*transition-duration: 0.1s;*/
     transition: all 0.10s ease;
+    border-radius: 2px;
 }
 
 .calcButton:hover {
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.54);
 }
 
-.clickSimulate {
-    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.54);
-    background-color: rgb(44, 54, 62);
+.calcButton:active, .clickSimulate {
+    background-color: rgb(49, 69, 84);
     color: coral;
     text-shadow: 0px 0px 20px coral;
     transform: translateY(2px);
 }
 
-.calcButton:active {
-    background-color: rgb(44, 54, 62);
-    color: coral;
-    text-shadow: 0px 0px 20px coral;
-    transform: translateY(2px);
+.clickSimulate {
+    box-shadow: 0 12px 16px 0 rgba(0,0,0,0.54);
 }
 
 .operating {

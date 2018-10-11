@@ -1,10 +1,10 @@
 const SPACE_BETWEEN_BUTTONS = 5;
-const CALCULATOR_WIDTH = 600;
+const CALCULATOR_WIDTH = 560;
 const CALCULATOR_HEIGHT = 400;
 const BUTTONS_HORIZONTALLY = 4;
 const BUTTONS_VERTICALLY = 5;
 const BUTTONS_QUANTITY = BUTTONS_HORIZONTALLY * BUTTONS_VERTICALLY;
-const buttonsSymbols = ['', 'C', '<-', '/', 
+const buttonsSymbols = ['^', 'C', '<-', '/', 
                         '7', '8', '9', 'X', 
                         '4', '5', '6', '-',
                         '1', '2', '3', '+', 
@@ -17,8 +17,7 @@ const keyboardCodes = ['', 46, 8, 111,
 
 let gCurrentData = 0;
 let gMemoryData = 0;
-let gResult = 0;
-let gOperation = 0;
+let gOperation = '';
 let gAddingNewOperand = false;
 
 const container = document.querySelector('.container')
@@ -54,13 +53,17 @@ function divide(x, y) {
     return rounded;
 }
 
+function power(x, y) {
+	return x**y;
+}
+
 function operate(operator, x, y) {
     return operator(x, y);
 }
 
 function drawCalculator() {
     const buttonWidth = 
-        (CALCULATOR_WIDTH - SPACE_BETWEEN_BUTTONS * 2 * BUTTONS_HORIZONTALLY) 
+        (CALCULATOR_WIDTH - SPACE_BETWEEN_BUTTONS*2 * 2 * BUTTONS_HORIZONTALLY) 
         / BUTTONS_HORIZONTALLY;
     const buttonHeight = 
         (CALCULATOR_HEIGHT - SPACE_BETWEEN_BUTTONS * 2 * BUTTONS_VERTICALLY) 
@@ -68,7 +71,7 @@ function drawCalculator() {
     for (let i = 1; i <= BUTTONS_QUANTITY; i++) {
         const button = document.createElement('div');
         button.classList.add('calcButton');
-        const newPadding = (Math.abs(48 - buttonHeight) / 2).toString() + 'px 0';
+        const newPadding = (Math.abs(53 - buttonHeight) / 2).toString() + 'px 0';
         button.style.padding = newPadding;
         button.style.width = buttonWidth.toString() + 'px';
         // button.style.height = buttonHeight.toString() + 'px';
@@ -106,6 +109,7 @@ function drawCalculator() {
             case 'X':
             case '+':
             case '-':
+            case '^':
                 button.addEventListener('click', startOperation);
                 break;
             case '=':
@@ -124,7 +128,7 @@ function drawCalculator() {
 }
 
 function startOperation(e) {
-    if (display.textContent === '') {
+    if (display.textContent === '' || gOperation !== '') {
         return;
     }
     gCurrentData = parseFloat(display.textContent);
@@ -136,7 +140,7 @@ function startOperation(e) {
 }
 
 function makeResults(e) {
-    if (gOperation === '' || display.textContent === '') {
+    if (gOperation === '' || display.textContent === '' || gAddingNewOperand) {
         return;
     }
     let operator;
@@ -153,21 +157,44 @@ function makeResults(e) {
         case '-':
             operator = substract;
             break;
+         case '^':
+            operator = power;
+            break;
     }
     let x = gMemoryData;
     let y = gCurrentData;
-    gResult = operate(operator, x, y);
-    display.textContent = gResult.toString();
+    let result = operate(operator, x, y);
+    result = handleNumberBigger13(result);
+    display.textContent = result.toString();
     gMemoryData = 0;
-    if (typeof gResult === 'number') {
-        gCurrentData = gResult;
+    if (typeof result === 'number') {
+        gCurrentData = result;
     }
     else {
         gCurrentData = 0;
     }
-    gResult = 0;
+    gOperation = '';
     const buttons = document.querySelectorAll('.calcButton');
     buttons.forEach(button => button.classList.remove('operating'));
+}
+
+function handleNumberBigger13(number) {
+    let numberString = number.toString();
+    if (numberString.length <= 13) {
+        return number;
+    }
+    let expNumberString = number.toExponential().toString();
+    let indexOfE = expNumberString.indexOf('e');
+    let expPartString = expNumberString.slice(indexOfE);
+    let expPartLength = expPartString.length;
+    console.log(expPartLength);
+    return number.toPrecision(13 - expPartLength - 1);
+    // let dotPlace = numberString.indexOf('.');
+    // let expNumberString = number.toExponential().toString();
+    // let indexOfE = expNumberString.indexOf('e');
+    // let expPartString = expNumberString.slice(indexOfE);
+    // let digitsAfterDot = 13 - (dotPlace + 1) - expPartString;
+    // return number.toExponential(digitsAfterDot);
 }
 
 function populateDisplay(e) {
@@ -195,7 +222,6 @@ function populateDisplay(e) {
 function clearAll(e) {
     gCurrentData = 0;
     gMemoryData = 0;
-    gResult = 0;
     gOperation = '';
     display.textContent = '';
     const buttons = document.querySelectorAll('.calcButton');
@@ -215,6 +241,15 @@ function pressKeyboardButton(e) {
 }
 
 function backSpace(e) {
+    if (gOperation !== '' && gAddingNewOperand) {
+        gOperation = '';
+        gAddingNewOperand = false;
+        gCurrentData = gMemoryData;
+        gMemoryData -= parseFloat(display.textContent);
+        const buttons = document.querySelectorAll('.calcButton');
+        buttons.forEach(button => button.classList.remove('operating'));
+        return;
+    }
     let displayString = display.textContent;
     if (displayString === '') {
         return;
