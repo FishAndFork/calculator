@@ -187,14 +187,10 @@ function handleNumberBigger13(number) {
     let indexOfE = expNumberString.indexOf('e');
     let expPartString = expNumberString.slice(indexOfE);
     let expPartLength = expPartString.length;
-    console.log(expPartLength);
+    if (number < 0) {
+        expPartLength += 1; // just to have one digit less in the result
+    }
     return number.toPrecision(13 - expPartLength - 1);
-    // let dotPlace = numberString.indexOf('.');
-    // let expNumberString = number.toExponential().toString();
-    // let indexOfE = expNumberString.indexOf('e');
-    // let expPartString = expNumberString.slice(indexOfE);
-    // let digitsAfterDot = 13 - (dotPlace + 1) - expPartString;
-    // return number.toExponential(digitsAfterDot);
 }
 
 function populateDisplay(e) {
@@ -259,6 +255,9 @@ function backSpace(e) {
 }
 
 function switchPlusMinus(e) {
+    if (display.textContent.length >= 13) {
+        return;
+    }
     if (gCurrentData > 0) {
         display.textContent = '-' + display.textContent;
         gCurrentData = -gCurrentData;
@@ -267,5 +266,4 @@ function switchPlusMinus(e) {
         display.textContent = display.textContent.slice(1);
         gCurrentData = -gCurrentData;
     }
-    
 }
