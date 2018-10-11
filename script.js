@@ -43,6 +43,9 @@ function multiply(x, y) {
 }
 
 function divide(x, y) {
+    if (y === 0) {
+        return 'Error';
+    }
     let result = x / y;
     let resultString = result.toString();
     let dotPlace = resultString.indexOf('.');
@@ -156,7 +159,12 @@ function makeResults(e) {
     gResult = operate(operator, x, y);
     display.textContent = gResult.toString();
     gMemoryData = 0;
-    gCurrentData = gResult;
+    if (typeof gResult === 'number') {
+        gCurrentData = gResult;
+    }
+    else {
+        gCurrentData = 0;
+    }
     gResult = 0;
     const buttons = document.querySelectorAll('.calcButton');
     buttons.forEach(button => button.classList.remove('operating'));
@@ -164,6 +172,9 @@ function makeResults(e) {
 
 function populateDisplay(e) {
     if (gAddingNewOperand) {
+        if (gOperation === '/' && e.target.textContent === '0') {
+            return;
+        }
         display.textContent = '';
         gAddingNewOperand = false;
     }
