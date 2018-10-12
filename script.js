@@ -22,6 +22,7 @@ let gAddingNewOperand = false;
 
 const container = document.querySelector('.container')
 const display = document.querySelector('.display');
+const displaySecondary = document.querySelector('.display-secondary');
 
 drawCalculator();
 
@@ -54,6 +55,9 @@ function divide(x, y) {
 }
 
 function power(x, y) {
+    if (x < 0 && (y < 1 && y > 0)) {
+        return 'Error';
+    }
 	return x**y;
 }
 
@@ -166,6 +170,7 @@ function makeResults(e) {
     let result = operate(operator, x, y);
     result = handleNumberBigger13(result);
     display.textContent = result.toString();
+    displaySecondary.textContent = '';
     gMemoryData = 0;
     if (typeof result === 'number') {
         gCurrentData = result;
@@ -199,6 +204,7 @@ function populateDisplay(e) {
             return;
         }
         display.textContent = '';
+        displaySecondary.textContent = handleNumberBigger13(gMemoryData).toString();
         gAddingNewOperand = false;
     }
     if (display.textContent.length >= 13) {
@@ -220,6 +226,7 @@ function clearAll(e) {
     gMemoryData = 0;
     gOperation = '';
     display.textContent = '';
+    displaySecondary.textContent = '';
     const buttons = document.querySelectorAll('.calcButton');
     buttons.forEach(button => button.classList.remove('operating'));
     buttons.forEach(button => button.classList.remove('clickSimulate'));
@@ -227,7 +234,9 @@ function clearAll(e) {
 
 function pressKeyboardButton(e) {
     const button = document.querySelector(`.calcButton[data-key="${e.keyCode}"]`);
-    // setTimeout(() => button.click(), 1000);
+    if (!button) {
+        return;
+    }
     button.click();
     button.classList.add('clickSimulate');
     button.addEventListener('transitionend', (e) => {
